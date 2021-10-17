@@ -168,6 +168,10 @@ def merge_key(s1, s2, threshold=0.5):
         shared = sum(c[i] for i in set(s2[Relion.IMAGE_NAME]))
         if shared >= s1.shape[0] * threshold:
             return Relion.IMAGE_NAME
+    # This fixes the uid prefix issue
+    if str(s1[UCSF.UID][0]) in s1[UCSF.IMAGE_BASENAME][0].split('_')[0]:
+        fp = ['_'.join(i.split('_')[1:]) for i in s1[UCSF.IMAGE_BASENAME]]
+        s1[UCSF.IMAGE_BASENAME] = fp
     if UCSF.IMAGE_BASENAME in inter:
         c = Counter(s1[UCSF.IMAGE_BASENAME])
         shared = sum(c[i] for i in set(s2[UCSF.IMAGE_BASENAME]))
