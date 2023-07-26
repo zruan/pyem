@@ -169,11 +169,17 @@ def merge_key(s1, s2, threshold=0.5):
         if shared >= s1.shape[0] * threshold:
             return Relion.IMAGE_NAME
     # This fixes the uid prefix issue
-    if str(s1[UCSF.UID][0]) in s1[UCSF.IMAGE_BASENAME][0].split('_')[0]:
+    #print(s1[UCSF.UID][0])
+    #print(s1[UCSF.IMAGE_BASENAME][0].split('_')[0])
+    #if str(s1[UCSF.UID][0]) in s1[UCSF.IMAGE_BASENAME][0].split('_')[0]:
+    import re
+    prefix_pttrn = re.compile('^[0-9]{10,}_.*$')
+    if prefix_pttrn.match(s1[UCSF.IMAGE_BASENAME][0]):
         fp = ['_'.join(i.split('_')[1:]) for i in s1[UCSF.IMAGE_BASENAME]]
         s1[UCSF.IMAGE_BASENAME] = fp
     if UCSF.IMAGE_BASENAME in inter:
         c = Counter(s1[UCSF.IMAGE_BASENAME])
+        #print(c)
         shared = sum(c[i] for i in set(s2[UCSF.IMAGE_BASENAME]))
         if shared >= s1.shape[0] * threshold:
             return [UCSF.IMAGE_BASENAME, UCSF.IMAGE_INDEX]
